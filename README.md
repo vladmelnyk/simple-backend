@@ -9,7 +9,7 @@
 
 ## Things I learnt
 
-* Application startup time and memory footprint drastically decreased due to abscence of Spring. Horizontal scaling of microservice becomes faster and requires provisioning less memory. The need for shrinking Java app has come to my mind recently as our production Java apps become more of monolith than microservice. Fat Jar is about 19 MB in size. I showed that you can live without Spring's sugar when it comes to MVC and DI do develop simple microservice. Ktor has modular structure and can be extended with required features in the future. Exposed ORM is lightweight although has some learning curve.
+* Application startup time and memory footprint drastically decreased due to absence of Spring. Horizontal scaling of microservice becomes faster and requires provisioning less memory. The need for shrinking Java app has come to my mind recently as our production Java apps become more of monolith than microservice. Fat Jar is about 19 MB in size. I showed that you can live without Spring's sugar when it comes to MVC and DI do develop simple microservice. Ktor has modular structure and can be extended with required features in the future. Exposed ORM is lightweight although has some learning curve. All in all it's a good starting point for building scalable lightweight microservice.
  
  ## DB schema:
  
