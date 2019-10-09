@@ -11,6 +11,9 @@
 
 * Application startup time and memory footprint drastically decreased due to abscence of Spring. Horizontal scaling of microservice becomes faster and requires provisioning less memory. The need for shrinking Java app has come to my mind recently as our production Java apps become more of monolith than microservice. Fat Jar is about 19 MB in size. I showed that you can live without Spring's sugar when it comes to MVC and DI do develop simple microservice. Ktor has modular structure and can be extended with required features in the future. Exposed ORM is lightweight although has some learning curve.
  
+ ## DB schema:
+ 
+ ![DB schema](DB_SCHEMA.png)
 
 ## TODO
 * Split integration tests into unit + integration tests to comply with [testing pyramid] (https://martinfowler.com/articles/practical-test-pyramid.html). Refactoring needed as there are quite some duplicates.
