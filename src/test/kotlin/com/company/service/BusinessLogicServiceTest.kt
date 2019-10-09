@@ -263,7 +263,6 @@ internal class BusinessLogicServiceTest {
         every { accountTo.balance } returns accountToBalance
         every { accountTo.currency } returns "usd"
         every { accountFrom.currency } returns "usd"
-
         val transfer = mockk<Transfer>()
         every { transfer.requestId } returns requestId
         every { transfer.receipt } returns receipt
@@ -324,9 +323,7 @@ internal class BusinessLogicServiceTest {
         val toAccountId = 2L
         val requestId = UUID.randomUUID().toString()
         val amount = BigDecimal.TEN
-        val receipt = UUID.randomUUID().toString()
         val transferRequest = TransferRequest(fromAccountId, toAccountId, amount, requestId)
-        val transferResponse = TransferResponse(requestId, receipt)
         every { repositoryService.getTransferByRequestId(requestId) } returns null
         every { repositoryService.getAccount(fromAccountId) } returns null
 
@@ -339,9 +336,7 @@ internal class BusinessLogicServiceTest {
         val toAccountId = 2L
         val requestId = UUID.randomUUID().toString()
         val amount = -BigDecimal.TEN
-        val receipt = UUID.randomUUID().toString()
         val transferRequest = TransferRequest(fromAccountId, toAccountId, amount, requestId)
-        val transferResponse = TransferResponse(requestId, receipt)
         every { repositoryService.getAccount(fromAccountId) } returns null
 
         assertThrows<InternalBadRequestException> { businessLogicService.transfer(transferRequest) }
@@ -353,9 +348,7 @@ internal class BusinessLogicServiceTest {
         val toAccountId = 2L
         val requestId = UUID.randomUUID().toString()
         val amount = -BigDecimal.TEN
-        val receipt = UUID.randomUUID().toString()
         val transferRequest = TransferRequest(fromAccountId, toAccountId, amount, requestId)
-        val transferResponse = TransferResponse(requestId, receipt)
         val accountFrom = mockk<Account>()
         val accountFromBalance = 0.toBigDecimal()
         val accountTo = mockk<Account>()
@@ -364,7 +357,6 @@ internal class BusinessLogicServiceTest {
         every { accountTo.balance } returns accountToBalance
         every { accountTo.currency } returns "usd"
         every { accountFrom.currency } returns "usd"
-
         every { repositoryService.getAccount(fromAccountId) } returns accountFrom
         every { repositoryService.getAccount(toAccountId) } returns accountTo
 
@@ -377,18 +369,16 @@ internal class BusinessLogicServiceTest {
         val toAccountId = 2L
         val requestId = UUID.randomUUID().toString()
         val amount = BigDecimal.TEN
-        val receipt = UUID.randomUUID().toString()
         val transferRequest = TransferRequest(fromAccountId, toAccountId, amount, requestId)
-        val transferResponse = TransferResponse(requestId, receipt)
         val accountFrom = mockk<Account>()
         val accountFromBalance = 50.toBigDecimal()
         val accountTo = mockk<Account>()
         val accountToBalance = 50.toBigDecimal()
+
         every { accountFrom.balance } returns accountFromBalance
         every { accountTo.balance } returns accountToBalance
         every { accountTo.currency } returns "eur"
         every { accountFrom.currency } returns "usd"
-
         every { repositoryService.getTransferByRequestId(requestId) } returns null
         every { repositoryService.getAccount(fromAccountId) } returns accountFrom
         every { repositoryService.getAccount(toAccountId) } returns accountTo
