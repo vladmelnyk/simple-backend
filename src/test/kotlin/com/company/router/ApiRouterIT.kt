@@ -45,14 +45,14 @@ class ApiRouterIT {
         @Test
         fun `get accounts for user successfully`() {
             withTestEngine {
-                val userId = 1L
+                val userId = 10L
                 val accountDto = createAccount()
                 createRemoteAccount(userId, accountDto)
 
                 handleRequest(Get, "/users/$userId/accounts").apply {
                     assertThat(response.status()).isEqualTo(OK)
                     val responseAccounts = response.readJsonList<AccountDto>()
-                    assertThat(responseAccounts.size)
+                    assertThat(responseAccounts.size).isEqualTo(1)
                 }
             }
         }
@@ -60,7 +60,6 @@ class ApiRouterIT {
         @Test
         fun `get single account for user successfully`() {
             withTestEngine {
-                val userId = 1L
                 val accountDto = createAccount(balance = BigDecimal.ZERO.setScale(4))
                 val accountId = createRemoteAccount(userId, accountDto)
 
@@ -76,7 +75,7 @@ class ApiRouterIT {
         @Test
         fun `test delete account success`() {
             withTestEngine {
-                val id = createRemoteAccount(1, accountDto)
+                val id = createRemoteAccount(userId, accountDto)
 
                 handleRequest(Delete, "/accounts/$id").apply {
                     assertThat(response.status()).isEqualTo(OK)
@@ -103,6 +102,7 @@ class ApiRouterIT {
                 val id = createRemoteAccount(userId, accountDto)
                 val amount = BigDecimal.TEN
                 val depositRequest = DepositRequest(amount, requestId)
+
                 handleRequest(Patch, "/accounts/$id") {
                     setJsonBody(depositRequest)
                 }.apply {
@@ -213,11 +213,11 @@ class ApiRouterIT {
         inner class Transfer {
             private val accountDto = createAccount()
             private val userId = 1L
-            private val requestId = UUID.randomUUID().toString()
 
             @Test
             fun `test successful transfer from account`() {
                 withTestEngine {
+                    val requestId = UUID.randomUUID().toString()
                     val fromAccountId = createRemoteAccount(userId, accountDto)
                     val toAccountId = createRemoteAccount(userId, accountDto)
                     val amount = BigDecimal.TEN
@@ -239,11 +239,24 @@ class ApiRouterIT {
                         assertThat(response.requestId).isEqualTo(requestId)
                         assertThat(response.receipt).isNotBlank()
                     }
+                    handleRequest(Get, "/accounts/$fromAccountId") {
+                    }.apply {
+                        assertThat(response.status()).isEqualTo(OK)
+                        val response = response.readJsonModel<AccountDto>()
+                        assertThat(response.balance).isEqualTo(BigDecimal.ZERO.setScale(4))
+                    }
+                    handleRequest(Get, "/accounts/$toAccountId") {
+                    }.apply {
+                        assertThat(response.status()).isEqualTo(OK)
+                        val response = response.readJsonModel<AccountDto>()
+                        assertThat(response.balance).isEqualTo(amount.setScale(4))
+                    }
                 }
             }
 
             @Test
             fun `retry transfer with the same idempotancy key`() {
+                val requestId = UUID.randomUUID().toString()
                 withTestEngine {
                     val fromAccountId = createRemoteAccount(userId, accountDto)
                     val toAccountId = createRemoteAccount(userId, accountDto)
@@ -280,6 +293,7 @@ class ApiRouterIT {
 
             @Test
             fun `transfer from and to account the same fails`() {
+                val requestId = UUID.randomUUID().toString()
                 withTestEngine {
                     val fromAccountId = createRemoteAccount(userId, accountDto)
                     val toAccountId = fromAccountId
@@ -300,6 +314,7 @@ class ApiRouterIT {
 
             @Test
             fun `transfer from non-existing account fails`() {
+                val requestId = UUID.randomUUID().toString()
                 withTestEngine {
                     val fromAccountId = 223L
                     val toAccountId = createRemoteAccount(userId, accountDto)
@@ -343,6 +358,7 @@ class ApiRouterIT {
 
             @Test
             fun `should have 400 on invalid amount`() {
+                val requestId = UUID.randomUUID().toString()
                 withTestEngine {
                     val fromAccountId = createRemoteAccount(userId, accountDto)
                     val toAccountId = createRemoteAccount(userId, accountDto)

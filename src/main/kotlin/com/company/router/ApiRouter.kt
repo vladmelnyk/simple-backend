@@ -68,9 +68,9 @@ class ApiRouter(
         route("/accounts") {
             get("/{id}") {
                 val id = call.getIdFromPath("id")
-                val account = kotlin.runCatching { businessLogicService.getAccount(id) }
+                val accountDto = kotlin.runCatching { businessLogicService.getAccount(id) }
                     .getOrElse { handleInternalException(it) }
-                call.respond(account)
+                call.respond(accountDto)
             }
 
             patch("/{id}") {
