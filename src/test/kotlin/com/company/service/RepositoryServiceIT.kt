@@ -15,7 +15,7 @@ import java.util.*
 
 class RepositoryServiceIT {
 
-    val db = Database.connect("jdbc:h2:mem:regular;DB_CLOSE_DELAY=-1;", "org.h2.Driver")
+    private val db = Database.connect("jdbc:h2:mem:regular;DB_CLOSE_DELAY=-1;", "org.h2.Driver")
     val repositoryService = RepositoryService(db)
 
     private val userDto = UserDto("test", "test", "test")
